@@ -235,7 +235,6 @@ public class OpenFLWebView extends Extension implements Runnable{
         webSettings.setUseWideViewPort(true);
         if (android.os.Build.VERSION.SDK_INT > 16)
             webSettings.setMediaPlaybackRequiresUserGesture(false);
-        mWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         mWebView.setBackgroundColor(0x00000000);
 		mObject.call0("onWebViewInited");
 		
@@ -246,7 +245,7 @@ public class OpenFLWebView extends Extension implements Runnable{
 	private void add(){
 		DisplayMetrics metrics = new DisplayMetrics();
 		mActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-		
+
 		if(!mWebViewAdded){
 			mLayout.addView(mWebView, mLayoutParams);
 			mWebViewAdded = true;
