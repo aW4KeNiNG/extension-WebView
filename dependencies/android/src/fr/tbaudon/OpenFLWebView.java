@@ -276,17 +276,20 @@ public class OpenFLWebView extends Extension implements Runnable{
 	}
 	
 	private void destroy() {
-		remove();
-		
-		mObject = null;
-		mWebView.destroy();
-		mWebView = null;
-		mLayout = null;
-		
-		System.gc();
-		
-		if(mVerbose)
-			Log.i("trace","WebView : Dispose.");
+        if(mWebView != null)
+        {
+            remove();
+
+            mObject = null;
+            mWebView.destroy();
+            mWebView = null;
+            mLayout = null;
+
+            System.gc();
+
+            if(mVerbose)
+                Log.i("trace","WebView : Dispose.");
+        }
 	}
 	
 }
