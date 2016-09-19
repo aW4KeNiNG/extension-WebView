@@ -39,6 +39,7 @@ class IOsWebView extends AbstractWebView {
             case "close" :
                 dispatchEvent(new Event(Event.CLOSE));
             case "change" :
+                url = params;
                 dispatchEvent(new Event(Event.CHANGE));
         }
     }

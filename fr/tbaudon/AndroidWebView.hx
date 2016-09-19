@@ -95,6 +95,7 @@ class AndroidWebView extends AbstractWebView{
 			case 'close' : 
 				dispatchEvent(new Event(Event.CLOSE));
             case 'change' :
+                url = param;
                 dispatchEvent(new Event(Event.CHANGE));
 			default :
 				trace(event);
