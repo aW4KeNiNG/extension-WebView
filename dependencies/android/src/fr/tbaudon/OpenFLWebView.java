@@ -1,5 +1,6 @@
 package fr.tbaudon;
 
+import android.webkit.WebSettings;
 import org.haxe.extension.Extension;
 
 import org.haxe.lime.HaxeObject;
@@ -226,10 +227,16 @@ public class OpenFLWebView extends Extension implements Runnable{
                  return true;
              }
          });
-		
-		mWebView.getSettings().setJavaScriptEnabled(true);
-		mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-		mWebView.setBackgroundColor(0x00000000);
+
+        WebSettings webSettings = mWebView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
+        webSettings.setLoadsImagesAutomatically(true);
+        webSettings.setUseWideViewPort(true);
+        if (android.os.Build.VERSION.SDK_INT > 16)
+            webSettings.setMediaPlaybackRequiresUserGesture(false);
+        mWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+        mWebView.setBackgroundColor(0x00000000);
 		mObject.call0("onWebViewInited");
 		
 		if(mVerbose)
