@@ -91,6 +91,12 @@ static int mLastId = 0;
     return mCloseView;
 }
 
+- (BOOL)webView:(UIWebView *)instance shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+    openflwebview_sendEvent("close", alloc_string([[[request URL] absoluteString] cStringUsingEncoding:NSUTF8StringEncoding]));
+
+    return YES;
+}
+
 @end
 
 namespace openflwebview {

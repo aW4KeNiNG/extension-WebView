@@ -19,12 +19,11 @@ class FlashWebView extends Sprite
 	var mW : Float;
 	var mH : Float;
 	var mClose:Bitmap;
-	var mUrl:String;
 
 	public function new(defaultUrl : String, w : Float = 400, h : Float = 400, close : Bool = false) 
 	{
 		super();
-		mUrl = defaultUrl;
+		url = defaultUrl;
 		mCocktailView = new CocktailView();
 		mCocktailView.loadURL(defaultUrl);
 		mCocktailView.viewport = { x : 0, y : 0, width : cast w, height : cast h };
@@ -39,9 +38,9 @@ class FlashWebView extends Sprite
 	}
 	
 	public function loadUrl(url : String) {
-		if(url != mUrl){
+		if(url != this.url){
 			mCocktailView.loadURL(url);
-			mUrl = url;
+            this.url = url;
 		}
 	}
 	

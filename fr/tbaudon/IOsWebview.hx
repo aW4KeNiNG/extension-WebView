@@ -37,7 +37,9 @@ class IOsWebView extends AbstractWebView {
         trace(name, params);
         switch(name){
             case "close" :
-                dispatchEvent(new Event('close'));
+                dispatchEvent(new Event(Event.CLOSE));
+            case "change" :
+                dispatchEvent(new Event(Event.CHANGE));
         }
     }
 
@@ -50,6 +52,7 @@ class IOsWebView extends AbstractWebView {
     }
 
     override public function loadUrl(url : String){
+        this.url = url;
         openflwebview_loadUrl(mId, url);
     }
 

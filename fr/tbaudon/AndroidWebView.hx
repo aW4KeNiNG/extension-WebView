@@ -62,6 +62,7 @@ class AndroidWebView extends AbstractWebView{
 	}
 
     override public function loadUrl(url : String) {
+        this.url = url;
 		if (mWebViewReady)
 			loadUrl_jni(mJNIInstance, url);
 		else
@@ -92,7 +93,9 @@ class AndroidWebView extends AbstractWebView{
 				var description : String = param;
 				dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, description));
 			case 'close' : 
-				dispatchEvent(new Event('close'));
+				dispatchEvent(new Event(Event.CLOSE));
+            case 'change' :
+                dispatchEvent(new Event(Event.CHANGE));
 			default :
 				trace(event);
 		}

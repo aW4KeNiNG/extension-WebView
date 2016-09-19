@@ -223,6 +223,8 @@ public class OpenFLWebView extends Extension implements Runnable{
              @Override
              public boolean shouldOverrideUrlLoading(WebView view, String url)
              {
+                 mObject.call2("onJNIEvent", "change" , url);
+
                  view.loadUrl(url);
                  return true;
              }
@@ -237,8 +239,8 @@ public class OpenFLWebView extends Extension implements Runnable{
             webSettings.setMediaPlaybackRequiresUserGesture(false);
         mWebView.setBackgroundColor(0x00000000);
 		mObject.call0("onWebViewInited");
-		
-		if(mVerbose)
+
+        if(mVerbose)
 			Log.i("trace","WebView : Created new webview.");
 	}
 	

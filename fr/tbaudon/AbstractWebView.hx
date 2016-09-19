@@ -7,6 +7,8 @@ import openfl.system.Capabilities;
 
 class AbstractWebView extends Sprite {
 
+    public var url (default, null) : String;
+
     /** WebView true width **/
     var mWidth : Float;
     /** WebView true height **/
