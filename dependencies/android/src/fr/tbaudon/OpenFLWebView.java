@@ -260,7 +260,8 @@ public class OpenFLWebView extends Extension implements Runnable{
 	private void remove(){
 		if(mVerbose)
 			Log.i("trace","WebView : Removed webview.");
-		mLayout.removeAllViews();
+        if(mLayout != null)
+		    mLayout.removeAllViews();
 		mWebViewAdded = false;
 	}
 	
