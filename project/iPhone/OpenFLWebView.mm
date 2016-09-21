@@ -92,7 +92,7 @@ static int mLastId = 0;
 }
 
 - (BOOL)webView:(UIWebView *)instance shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-    openflwebview_sendEvent("close", alloc_string([[[request URL] absoluteString] cStringUsingEncoding:NSUTF8StringEncoding]));
+    openflwebview_sendEvent("change", [[[request URL] absoluteString] cStringUsingEncoding:NSUTF8StringEncoding]);
 
     return YES;
 }
