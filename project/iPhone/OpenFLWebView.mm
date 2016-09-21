@@ -153,7 +153,8 @@ namespace openflwebview {
         UIImageView* button = [webView getButton];
         if(button != NULL)
             [button removeFromSuperview];
-            
+
+        [webView stopLoading];
         [webView removeFromSuperview];
     }
     
@@ -188,6 +189,7 @@ namespace openflwebview {
         while(iter != webViews.end()){
             OpenFLWebView* current = *iter;
             if([current getId] == id){
+                [current release];
                 webViews.erase(iter);
                 break;
             }
