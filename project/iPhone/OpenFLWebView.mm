@@ -38,6 +38,7 @@ static int mLastId = 0;
     NSURLRequest *req = [[NSURLRequest alloc] initWithURL:_url];
     self = [self initWithFrame: CGRectMake(0,0,width,height)];
     self.scrollView.bounces = NO;
+    self.mediaPlaybackRequiresUserAction = false;
     [self loadRequest:req];
     return self;
 }
