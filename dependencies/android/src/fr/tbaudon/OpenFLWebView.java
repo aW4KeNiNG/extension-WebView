@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
@@ -235,6 +236,8 @@ public class OpenFLWebView extends Extension implements Runnable{
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         webSettings.setLoadsImagesAutomatically(true);
         webSettings.setUseWideViewPort(true);
+        webSettings.setAllowFileAccess(true);
+        webSettings.setAllowUniversalAccessFromFileURLs(true);
         if (android.os.Build.VERSION.SDK_INT > 16)
             webSettings.setMediaPlaybackRequiresUserGesture(false);
         mWebView.setBackgroundColor(0x00000000);
@@ -281,6 +284,8 @@ public class OpenFLWebView extends Extension implements Runnable{
             remove();
 
             mObject = null;
+            mWebView.clearHistory();
+            mWebView.pauseTimers();
             mWebView.destroy();
             mWebView = null;
             mLayout = null;
