@@ -82,24 +82,37 @@ class AndroidWebView extends AbstractWebView{
 		}
 	}
 	
-	function onJNIEvent(event : String, param : Dynamic ) {
+	function onJNIEvent(event : String, param : Dynamic ):String {  //TODO - Lime JNI only support a string as return. Check Java_org_haxe_lime_Lime_callObjectFunction
 		switch(event) {
 			case 'progress' :
 				var progress : Int = param;
 				dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS, false, false, progress, 100));
-				if (progress == 100)
-					dispatchEvent(new Event(Event.COMPLETE)); 
-			case 'error' :
+            case 'complete' :
+                dispatchEvent(new Event(Event.COMPLETE));
+            case 'error' :
 				var description : String = param;
 				dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, description));
 			case 'close' : 
 				dispatchEvent(new Event(Event.CLOSE));
             case 'change' :
-                url = param;
-                dispatchEvent(new Event(Event.CHANGE));
+                var allowUrl:Bool = true;
+                if(onUrlChanging != null)
+                {
+                    allowUrl = onUrlChanging(param);
+                }
+
+                if(allowUrl)
+                {
+                    url = param;
+                    dispatchEvent(new Event(Event.CHANGE));
+                }
+
+                return allowUrl ? url : null;
 			default :
 				trace(event);
 		}
+
+        return null;
 	}
 
     override function onRemovedFromStage(e:Event):Void

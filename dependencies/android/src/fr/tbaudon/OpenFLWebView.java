@@ -21,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 
+import static android.R.attr.description;
+
 public class OpenFLWebView extends Extension implements Runnable{
 	
 	private int mWidth;
@@ -222,12 +224,24 @@ public class OpenFLWebView extends Extension implements Runnable{
              }
 
              @Override
+             public void onPageFinished (WebView view, String url)
+             {
+                 super.onPageFinished(view, url);
+
+                 mObject.call2("onJNIEvent", "complete", url);
+             }
+
+             @Override
              public boolean shouldOverrideUrlLoading(WebView view, String url)
              {
-                 mObject.call2("onJNIEvent", "change" , url);
+                 boolean allowUrl = mObject.call2("onJNIEvent", "change" , url) != null;
 
-                 view.loadUrl(url);
-                 return true;
+                 if(allowUrl)
+                 {
+                     view.loadUrl(url);
+                 }
+
+                 return allowUrl;
              }
          });
 
