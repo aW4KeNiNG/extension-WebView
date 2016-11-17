@@ -241,7 +241,7 @@ public class OpenFLWebView extends Extension implements Runnable{
                      view.loadUrl(url);
                  }
 
-                 return allowUrl;
+                 return !allowUrl;
              }
          });
 
