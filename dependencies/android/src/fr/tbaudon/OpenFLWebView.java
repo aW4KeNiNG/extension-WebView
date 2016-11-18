@@ -1,27 +1,22 @@
 package fr.tbaudon;
 
-import android.webkit.WebSettings;
-import org.haxe.extension.Extension;
-
-import org.haxe.lime.HaxeObject;
-
-import fr.tbaudon.openflwebview.R;
 import android.app.Activity;
-import android.graphics.BitmapFactory;
+import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
-
-import static android.R.attr.description;
+import fr.tbaudon.openflwebview.R;
+import org.haxe.extension.Extension;
+import org.haxe.lime.HaxeObject;
 
 public class OpenFLWebView extends Extension implements Runnable{
 	
@@ -44,7 +39,7 @@ public class OpenFLWebView extends Extension implements Runnable{
 	private HaxeObject mObject;
 	private LayoutParams mLayoutParams;
 	private LayoutParams mCloseLayoutParams;
-	
+
 	private int mCloseOffsetX;
 	private int mCloseOffsetY;
 
@@ -209,10 +204,57 @@ public class OpenFLWebView extends Extension implements Runnable{
 		
 		// webChromeClient
 		mWebView.setWebChromeClient(new WebChromeClient() {
-			@Override
-			public void onProgressChanged(WebView view, int progress) {
-				mObject.call2("onJNIEvent", "progress", progress);
-			}
+            FrameLayout.LayoutParams LayoutParameters = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.MATCH_PARENT);
+
+            private View mCustomView;
+            private FrameLayout mCustomViewContainer;
+            private WebChromeClient.CustomViewCallback mCustomViewCallback;
+            private int mScreenOrientationBackup;
+
+            @Override
+            public void onShowCustomView(View view, CustomViewCallback callback) {
+                // if a view already exists then immediately terminate the new one
+                if (mCustomView != null) {
+                    callback.onCustomViewHidden();
+                    return;
+                }
+
+                mScreenOrientationBackup = mActivity.getRequestedOrientation();
+                mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR); //Allow landscape and portrait
+
+                mLayout.setVisibility(View.INVISIBLE);
+                mCustomViewContainer = new FrameLayout(mActivity);
+                mCustomViewContainer.setBackgroundResource(android.R.color.black);
+                view.setLayoutParams(LayoutParameters);
+                mCustomViewContainer.addView(view);
+                mCustomView = view;
+                mCustomViewCallback = callback;
+                mCustomViewContainer.setVisibility(View.VISIBLE);
+                mActivity.addContentView(mCustomViewContainer, LayoutParameters);
+            }
+
+            @Override
+            public void onHideCustomView() {
+                if (mCustomView == null) {
+                    return;
+                } else {
+                    mCustomView.setVisibility(View.GONE);
+                    mCustomViewContainer.removeView(mCustomView);
+                    mCustomView = null;
+                    mCustomViewContainer.setVisibility(View.GONE);
+                    mCustomViewCallback.onCustomViewHidden();
+                    mCustomViewCallback = null;
+
+                    mLayout.setVisibility(View.VISIBLE);
+                    mActivity.setRequestedOrientation(mScreenOrientationBackup);
+                }
+            }
+
+            @Override
+            public void onProgressChanged(WebView view, int progress) {
+                mObject.call2("onJNIEvent", "progress", progress);
+            }
 		});
 		
 		// webClient
@@ -310,5 +352,5 @@ public class OpenFLWebView extends Extension implements Runnable{
                 Log.i("trace","WebView : Dispose.");
         }
 	}
-	
+
 }
