@@ -27,18 +27,18 @@ class AndroidWebView extends AbstractWebView{
 	 * Sample : (Ljava/lang/String;I)Z = function(String, Int) : bool
 	 */
 	// STATIC METHOD
-	private static var create_jni = JNI.createStaticMethod("fr.tbaudon.OpenFLWebView", "create", "(Lorg/haxe/lime/HaxeObject;IIZ)Lfr/tbaudon/OpenFLWebView;");
+	private static var create_jni = JNI.createStaticMethod("fr.tbaudon.OpenFLWebView", "create", "(Lorg/haxe/lime/HaxeObject;IIZ)Lfr/tbaudon/WebViewObject;");
 	private static var getRealHeight_jni = JNI.createStaticMethod("fr.tbaudon.OpenFLWebView", "getRealHeight", "()I");
 	private static var getRealWidth_jni = JNI.createStaticMethod("fr.tbaudon.OpenFLWebView", "getRealWidth", "()I");
 	
 	// MEMBER METHOD
-	private static var add_jni = JNI.createMemberMethod("fr.tbaudon.OpenFLWebView", "onAdded", "()V");
-	private static var remove_jni = JNI.createMemberMethod("fr.tbaudon.OpenFLWebView", "onRemoved", "()V");
-	private static var loadUrl_jni = JNI.createMemberMethod("fr.tbaudon.OpenFLWebView", "loadUrl", "(Ljava/lang/String;)V");
-	private static var setPos_jni = JNI.createMemberMethod("fr.tbaudon.OpenFLWebView", "setPosition", "(II)V");
-	private static var setDim_jni = JNI.createMemberMethod("fr.tbaudon.OpenFLWebView", "setDim", "(II)V");
-	private static var setVerbose_jni = JNI.createMemberMethod("fr.tbaudon.OpenFLWebView", "setVerbose", "(Z)V");
-	private static var dispose_jni = JNI.createMemberMethod("fr.tbaudon.OpenFLWebView", "dispose", "()V");
+	private static var add_jni = JNI.createMemberMethod("fr.tbaudon.WebViewObject", "onAdded", "()V");
+	private static var remove_jni = JNI.createMemberMethod("fr.tbaudon.WebViewObject", "onRemoved", "()V");
+	private static var loadUrl_jni = JNI.createMemberMethod("fr.tbaudon.WebViewObject", "loadUrl", "(Ljava/lang/String;)V");
+	private static var setPos_jni = JNI.createMemberMethod("fr.tbaudon.WebViewObject", "setPosition", "(II)V");
+	private static var setDim_jni = JNI.createMemberMethod("fr.tbaudon.WebViewObject", "setDim", "(II)V");
+	private static var setVerbose_jni = JNI.createMemberMethod("fr.tbaudon.WebViewObject", "setVerbose", "(Z)V");
+	private static var dispose_jni = JNI.createMemberMethod("fr.tbaudon.WebViewObject", "dispose", "()V");
 	
 	/*************************************************************/
 	
