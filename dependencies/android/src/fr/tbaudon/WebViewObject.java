@@ -145,28 +145,29 @@ public class WebViewObject extends Object implements Runnable{
 		mActivity.addContentView(mLayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
 		// close button
-
-		mClose = new ImageView(mActivity);
-
-		mClose.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				mObject.call2("onJNIEvent", "close", null);
-			}
-		});
-
-		RelativeLayout closeLayout = new RelativeLayout(mActivity);
-		LayoutParams closeLP = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-		mWebView.addView(closeLayout, closeLP);
-
-		mCloseLayoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		mCloseLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		mClose.setLayoutParams(mCloseLayoutParams);
-
-		mClose.setImageResource(R.drawable.close);
-
 		if(mAddClose)
-			closeLayout.addView(mClose);
+        {
+            mClose = new ImageView(mActivity);
+
+            mClose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View arg0) {
+                    mObject.call2("onJNIEvent", "close", null);
+                }
+            });
+
+            RelativeLayout closeLayout = new RelativeLayout(mActivity);
+            LayoutParams closeLP = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+            mWebView.addView(closeLayout, closeLP);
+
+            mCloseLayoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+            mCloseLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            mClose.setLayoutParams(mCloseLayoutParams);
+
+            mClose.setImageResource(R.drawable.close);
+
+            closeLayout.addView(mClose);
+        }
 
 		// webChromeClient
 		mWebView.setWebChromeClient(new WebChromeClient() {
