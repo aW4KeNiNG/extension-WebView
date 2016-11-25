@@ -30,7 +30,8 @@ class AndroidWebView extends AbstractWebView{
 	private static var create_jni = JNI.createStaticMethod("fr.tbaudon.OpenFLWebView", "create", "(Lorg/haxe/lime/HaxeObject;IIZ)Lfr/tbaudon/WebViewObject;");
 	private static var getRealHeight_jni = JNI.createStaticMethod("fr.tbaudon.OpenFLWebView", "getRealHeight", "()I");
 	private static var getRealWidth_jni = JNI.createStaticMethod("fr.tbaudon.OpenFLWebView", "getRealWidth", "()I");
-	
+	private static var setPreventBack_jni = JNI.createStaticMethod("fr.tbaudon.OpenFLWebView", "setPreventBack", "(Z)V");
+
 	// MEMBER METHOD
 	private static var add_jni = JNI.createMemberMethod("fr.tbaudon.WebViewObject", "onAdded", "()V");
 	private static var remove_jni = JNI.createMemberMethod("fr.tbaudon.WebViewObject", "onRemoved", "()V");
@@ -56,6 +57,10 @@ class AndroidWebView extends AbstractWebView{
 
         super(defaultUrl, w, h);
 	}
+
+    public function setPreventBack(preventBack : Bool) {
+        setPreventBack_jni(preventBack);
+    }
 	
 	override public function setVerbose(verbose : Bool) {
 		setVerbose_jni(mJNIInstance, verbose);

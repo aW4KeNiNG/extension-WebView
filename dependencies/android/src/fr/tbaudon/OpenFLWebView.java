@@ -7,7 +7,9 @@ import org.haxe.lime.HaxeObject;
 
 public class OpenFLWebView extends Extension{
 
-	public static WebViewObject create(HaxeObject object, int width, int height, boolean closeBtn){
+    private static boolean mPreventBack = false;
+
+    public static WebViewObject create(HaxeObject object, int width, int height, boolean closeBtn){
         return new WebViewObject(mainActivity, object, width, height, closeBtn);
 	}
 	
@@ -35,7 +37,16 @@ public class OpenFLWebView extends Extension{
 		return width;
 	}
 
+    public static void setPreventBack(boolean preventBack){
+        mPreventBack = preventBack;
+    }
+
 	public OpenFLWebView() {
         super();
+    }
+
+    @Override
+    public boolean onBackPressed () {
+        return !mPreventBack;
     }
 }
