@@ -1,7 +1,7 @@
 #include <vector>
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
+#import <WebKit/WebKit.h>
 #include <Utils.h>
 
 // used from external interface
@@ -10,7 +10,7 @@ extern "C"{
     void openflwebview_sendEvent(const char* event, const char* params);
 }
 
-@interface OpenFLWebView : UIWebView
+@interface OpenFLWebView : WKWebView
 
 @property (assign) int mId;
 @property (strong) UIImageView* mCloseView;
@@ -36,9 +36,11 @@ static int mLastId = 0;
     ++mLastId;
     NSURL* _url = [[NSURL alloc] initWithString: url];
     NSURLRequest *req = [[NSURLRequest alloc] initWithURL:_url];
-    self = [self initWithFrame: CGRectMake(0,0,width,height)];
+    WKWebViewConfiguration *conf = [[WKWebViewConfiguration alloc] init];
+    self = [self initWithFrame: CGRectMake(0,0,width,height) configuration: conf];
+    //self.navigationDelegate = self;
     self.scrollView.bounces = NO;
-    self.mediaPlaybackRequiresUserAction = false;
+    //self.mediaPlaybackRequiresUserAction = false;
     [self loadRequest:req];
     return self;
 }
@@ -92,11 +94,11 @@ static int mLastId = 0;
     return mCloseView;
 }
 
-- (BOOL)webView:(UIWebView *)instance shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-    openflwebview_sendEvent("change", [[[request URL] absoluteString] cStringUsingEncoding:NSUTF8StringEncoding]);
+//- (BOOL)webView:(UIWebView *)instance shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+//   openflwebview_sendEvent("change", [[[request URL] absoluteString] cStringUsingEncoding:NSUTF8StringEncoding]);
 
-    return YES;
-}
+//    return YES;
+//}
 
 @end
 
@@ -160,7 +162,7 @@ namespace openflwebview {
     }
     
     void setPos(int id, int x, int y){
-        UIWebView* webView = getWebView(id);
+        OpenFLWebView* webView = getWebView(id);
         
         CGFloat screenScale = [[UIScreen mainScreen] scale];
         
