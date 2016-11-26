@@ -308,7 +308,6 @@ public class WebViewObject extends Object implements Runnable{
 
             mObject = null;
             mWebView.clearHistory();
-            mWebView.pauseTimers();
             mWebView.destroy();
             mWebView = null;
             mLayout = null;
