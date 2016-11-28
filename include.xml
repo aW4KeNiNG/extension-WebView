@@ -12,6 +12,6 @@
 
     <section if="ios">
         <ndll name="openflwebview" />
-        <dependency name="WebKit.framework" if="ios" />
+        <dependency name="WebKit.framework" />
     </section>
 </extension>
