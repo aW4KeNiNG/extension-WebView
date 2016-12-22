@@ -2,6 +2,7 @@ package fr.tbaudon;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -221,6 +222,11 @@ public class WebViewObject extends Object implements Runnable{
             @Override
             public void onProgressChanged(WebView view, int progress) {
                 mObject.call2("onJNIEvent", "progress", progress);
+            }
+
+            @Override
+            public Bitmap getDefaultVideoPoster() {
+                return Bitmap.createBitmap(10, 10, Bitmap.Config.ARGB_8888);
             }
 		});
 		
