@@ -97,7 +97,12 @@ static int mLastId = 0;
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(nonnull WKNavigationAction *)navigationAction decisionHandler:(nonnull void (^)(WKNavigationActionPolicy))decisionHandler
 {
     if (navigationAction.request.URL) {
-        openflwebview_sendEvent("change", [[navigationAction.request.URL absoluteString] cStringUsingEncoding:NSUTF8StringEncoding]);
+        if(navigationAction.targetFrame.isMainFrame) {
+           openflwebview_sendEvent("change", [[navigationAction.request.URL absoluteString] cStringUsingEncoding:NSUTF8StringEncoding]);
+        }
+        else {
+           openflwebview_sendEvent("change_blank", [[navigationAction.request.URL absoluteString] cStringUsingEncoding:NSUTF8StringEncoding]);
+        }
     }
 
     decisionHandler(WKNavigationActionPolicyAllow);
