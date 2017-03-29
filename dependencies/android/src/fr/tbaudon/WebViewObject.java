@@ -6,10 +6,7 @@ import android.graphics.Bitmap;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.webkit.*;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -227,6 +224,15 @@ public class WebViewObject extends Object implements Runnable{
             @Override
             public Bitmap getDefaultVideoPoster() {
                 return Bitmap.createBitmap(10, 10, Bitmap.Config.ARGB_8888);
+            }
+
+            @Override
+            public boolean onConsoleMessage(ConsoleMessage cm) {
+                if(mVerbose)
+                    Log.i("trace", cm.message() + " -- From line "
+                        + cm.lineNumber() + " of "
+                        + cm.sourceId() );
+                return true;
             }
 		});
 		
