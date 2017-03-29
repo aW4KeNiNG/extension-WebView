@@ -123,12 +123,6 @@ class AndroidWebView extends AbstractWebView{
 	}
 
 //    override function onPause(e : Event){
-//        trace("ONPAUSE");
-//        trace("ONPAUSE");
-//        trace("ONPAUSE");
-//        trace("ONPAUSE");
-//        trace("ONPAUSE", mWebViewReady);
-//        trace("ONPAUSE", mWebViewReady);
 //        if (mWebViewReady)
 //            pause_jni(mJNIInstance);
 //        else
@@ -137,11 +131,6 @@ class AndroidWebView extends AbstractWebView{
 //
 //
 //    override function onResume(e : Event){
-//        trace("ONRESUME");
-//        trace("ONRESUME");
-//        trace("ONRESUME");
-//        trace("ONRESUME");
-//        trace("ONRESUME");
 //        if (mWebViewReady)
 //            resume_jni(mJNIInstance);
 //        else

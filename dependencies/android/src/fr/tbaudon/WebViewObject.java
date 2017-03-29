@@ -100,12 +100,10 @@ public class WebViewObject extends Object implements Runnable{
 
     public void onPaused() {
         runState(State.PAUSE);
-        Log.i("traceeeeee", "pauseeeeeeee1111");
     }
 
     public void onResumed() {
         runState(State.RESUME);
-        Log.i("traceeeeee", "resumeeeee1111");
     }
 
     public void onOrientationChange(){
@@ -359,20 +357,15 @@ public class WebViewObject extends Object implements Runnable{
 	}
 
 	public void pause() {
-        Log.i("GameActivity", "onPauseeeeeeeeee asdadfasdfasdfasdf");
         if(mWebView != null) {
-            Log.i("GameActivity", "onPauseeeeeeeeee asdadfasdfasdfasdf22");
 	        mWebView.pauseTimers();
-//	        mWebView.onPause();
             callHiddenWebViewMethod("onPause");
         }
     }
 
     public void resume() {
 	    if(mWebView != null) {
-            Log.i("traceeeeee", "resumeeeee");
             mWebView.resumeTimers();
-//            mWebView.onResume();
             callHiddenWebViewMethod("onResume");
         }
     }

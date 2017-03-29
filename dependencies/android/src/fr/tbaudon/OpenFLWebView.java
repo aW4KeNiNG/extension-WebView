@@ -15,7 +15,6 @@ public class OpenFLWebView extends Extension{
     public static WebViewObject create(HaxeObject object, int width, int height, boolean closeBtn){
         WebViewObject webView = new WebViewObject(mainActivity, object, width, height, closeBtn);
         mWebViews.add(webView);
-        Log.i("GameActivity", "createeeeeeeeee" + String.valueOf(mWebViews.size()));
         return webView;
 	}
 
@@ -62,18 +61,14 @@ public class OpenFLWebView extends Extension{
 
     @Override
     public void onPause () {
-//        Log.i("GameActivity", "onPauseeeeeeeeee" + String.valueOf(mWebViews.size()));
         for(int i = 0, count = mWebViews.size(); i<count; ++i) {
-//            Log.i("GameActivity", "onPauseeeeeeeeee item" + String.valueOf(i));
             mWebViews.get(i).pause();
         }
     }
 
     @Override
     public void onResume () {
-//        Log.i("GameActivity", "onResumeeeeeeeeeeeee" + String.valueOf(mWebViews.size()));
         for(int i = 0, count = mWebViews.size(); i<count; ++i) {
-//            Log.i("GameActivity", "onResumeeeeeeeeeeeee item" + String.valueOf(i));
             mWebViews.get(i).resume();
         }
     }
