@@ -105,7 +105,7 @@ class AndroidWebView extends AbstractWebView{
                 var allowUrl:Bool = true;
                 if(onUrlChanging != null)
                 {
-                    allowUrl = onUrlChanging(param);
+                    allowUrl = onUrlChanging(param, "");
                 }
 
                 if(allowUrl)

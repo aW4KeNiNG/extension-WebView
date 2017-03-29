@@ -10,10 +10,10 @@ class AbstractWebView extends Sprite {
     public var url (default, null) : String;
 
     /**
-        Use this function to prevent a web from load.
+        Use this function to prevent a web from load. Url + target parameters
         Return false to avoid the loading.
     **/
-    public var onUrlChanging:String->Bool;
+    public var onUrlChanging:String->String->Bool;
 
     /** WebView true width **/
     var mWidth : Float;

@@ -10,7 +10,7 @@ extern "C"{
     void openflwebview_sendEvent(const char* event, const char* params);
 }
 
-@interface OpenFLWebView : WKWebView
+@interface OpenFLWebView : WKWebView <WKNavigationDelegate>
 
 @property (assign) int mId;
 @property (strong) UIImageView* mCloseView;
@@ -37,10 +37,12 @@ static int mLastId = 0;
     NSURL* _url = [[NSURL alloc] initWithString: url];
     NSURLRequest *req = [[NSURLRequest alloc] initWithURL:_url];
     WKWebViewConfiguration *conf = [[WKWebViewConfiguration alloc] init];
+    conf.allowsInlineMediaPlayback = true;
+    conf.mediaPlaybackRequiresUserAction = false;
+    //conf.mediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypeNone;       //TODO ios10
     self = [self initWithFrame: CGRectMake(0,0,width,height) configuration: conf];
-    //self.navigationDelegate = self;
+    self.navigationDelegate = self;
     self.scrollView.bounces = NO;
-    //self.mediaPlaybackRequiresUserAction = false;
     [self loadRequest:req];
     return self;
 }
@@ -55,7 +57,7 @@ static int mLastId = 0;
     CGFloat scale = [[UIScreen mainScreen] scale];
     if(scale > 1)
         dpi = @"xhdpi";
-    
+
     UIImage* closeImage = [[UIImage alloc] initWithContentsOfFile: [[NSBundle mainBundle] pathForResource: [NSString stringWithFormat:@"assets/webviewui/close_%@.png", dpi] ofType: nil]];
     
     mCloseView = [[UIImageView alloc] initWithImage: closeImage];
@@ -63,7 +65,7 @@ static int mLastId = 0;
     
     [self updateCloseFrame];
 
-    //[mCloseBtn setImageEdgeInsets: UIEdgeInsetsMake( -20/scale, -20/scale, -20/scale, -20/scale)];
+    //[mCloseBtn setImageEdgeInsets: UIEdgeInsetsMake( -20, -20, -20, -20)];
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closePressed)];
     tap.numberOfTapsRequired = 1;
     [mCloseView addGestureRecognizer: tap];
@@ -72,17 +74,15 @@ static int mLastId = 0;
 
 - (void) updateCloseFrame {
     if(mCloseView != NULL){
-        CGFloat scale = [[UIScreen mainScreen] scale];
-    
         UIImage *closeImage = mCloseView.image;
     
         CGFloat offsetX = (closeImage.size.width / 1.5);
         CGFloat offsetY = (closeImage.size.height / 3);
     
-        int x = self.frame.origin.x + self.frame.size.width - offsetX/scale;
-        int y = self.frame.origin.y + 0 - offsetY/scale;
+        int x = self.frame.origin.x + self.frame.size.width - offsetX;
+        int y = self.frame.origin.y + 0 - offsetY;
     
-        mCloseView.frame = CGRectMake(x,y,closeImage.size.width/scale, closeImage.size.height/scale);
+        mCloseView.frame = CGRectMake(x,y,closeImage.size.width, closeImage.size.height);
     }
 }
 
@@ -94,11 +94,19 @@ static int mLastId = 0;
     return mCloseView;
 }
 
-//- (BOOL)webView:(UIWebView *)instance shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-//   openflwebview_sendEvent("change", [[[request URL] absoluteString] cStringUsingEncoding:NSUTF8StringEncoding]);
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(nonnull WKNavigationAction *)navigationAction decisionHandler:(nonnull void (^)(WKNavigationActionPolicy))decisionHandler
+{
+    if (navigationAction.request.URL) {
+        if(navigationAction.targetFrame.isMainFrame) {
+           openflwebview_sendEvent("change", [[navigationAction.request.URL absoluteString] cStringUsingEncoding:NSUTF8StringEncoding]);
+        }
+        else {
+           openflwebview_sendEvent("change_blank", [[navigationAction.request.URL absoluteString] cStringUsingEncoding:NSUTF8StringEncoding]);
+        }
+    }
 
-//    return YES;
-//}
+    decisionHandler(WKNavigationActionPolicyAllow);
+}
 
 @end
 
@@ -163,24 +171,18 @@ namespace openflwebview {
     
     void setPos(int id, int x, int y){
         OpenFLWebView* webView = getWebView(id);
-        
-        CGFloat screenScale = [[UIScreen mainScreen] scale];
-        
+
         CGRect newFrame = webView.frame;
-       // newFrame.origin = CGPointMake(x / screenScale,y / screenScale);
-		NSLog(@"set view position %i,%i", x, y);
-		newFrame.origin = CGPointMake(x / screenScale,y / screenScale);
+		newFrame.origin = CGPointMake(x,y);
         
         [webView setFrame: newFrame];
     }
     
     void setDim(int id, int x, int y){
         OpenFLWebView* webView = getWebView(id);
-        
-        CGFloat screenScale = [[UIScreen mainScreen] scale];
-        
+
         CGRect newFrame = webView.frame;
-        newFrame.size = CGSizeMake(x / screenScale,y / screenScale);
+        newFrame.size = CGSizeMake(x,y);
         
         [webView setFrame: newFrame];
         [webView updateCloseFrame];

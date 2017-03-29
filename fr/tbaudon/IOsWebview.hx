@@ -38,9 +38,18 @@ class IOsWebView extends AbstractWebView {
         switch(name){
             case "close" :
                 dispatchEvent(new Event(Event.CLOSE));
-            case "change" :
-                url = params;
-                dispatchEvent(new Event(Event.CHANGE));
+            case "change", "change_blank" :
+                var allowUrl:Bool = true;
+                if(onUrlChanging != null)
+                {
+                    allowUrl = onUrlChanging(params, name == "change_blank" ? "_blank" : "");
+                }
+
+                if(allowUrl)
+                {
+                    url = params;
+                    dispatchEvent(new Event(Event.CHANGE));
+                }
         }
     }
 
