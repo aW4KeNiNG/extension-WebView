@@ -5,5 +5,7 @@ public enum State {
 	ADD,
 	REMOVE,
 	UPDATE,
+    PAUSE,
+    RESUME,
 	DESTROY
 }

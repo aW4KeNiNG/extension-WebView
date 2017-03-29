@@ -14,6 +14,9 @@ import android.widget.RelativeLayout.LayoutParams;
 import fr.tbaudon.openflwebview.R;
 import org.haxe.lime.HaxeObject;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 public class WebViewObject extends Object implements Runnable{
 
 	private int mWidth;
@@ -95,13 +98,47 @@ public class WebViewObject extends Object implements Runnable{
 		runState(State.REMOVE);
 	}
 
-	public void onOrientationChange(){
+    public void onPaused() {
+        runState(State.PAUSE);
+        Log.i("traceeeeee", "pauseeeeeeee1111");
+    }
+
+    public void onResumed() {
+        runState(State.RESUME);
+        Log.i("traceeeeee", "resumeeeee1111");
+    }
+
+    public void onOrientationChange(){
 		runState(State.UPDATE);
 	}
 
 	public void dispose(){
 		runState(State.DESTROY);
 	}
+
+    private void callHiddenWebViewMethod(String name)
+    {
+        if (mWebView != null)
+        {
+            try
+            {
+                Method method = WebView.class.getMethod(name);
+                method.invoke(mWebView);
+            }
+            catch (NoSuchMethodException e)
+            {
+                Log.e("No such method: " + name, e.toString());
+            }
+            catch (IllegalAccessException e)
+            {
+                Log.e("Illegal Access: " + name, e.toString());
+            }
+            catch (InvocationTargetException e)
+            {
+                Log.e("Invocation Target Exception: " + name, e.toString());
+            }
+        }
+    }
 
 	@Override
 	public void run() {
@@ -121,6 +158,12 @@ public class WebViewObject extends Object implements Runnable{
 			case DESTROY :
 				destroy();
 				break;
+            case PAUSE :
+                pause();
+                break;
+            case RESUME :
+                resume();
+                break;
 			default :
 				break;
 		}
@@ -133,6 +176,7 @@ public class WebViewObject extends Object implements Runnable{
 
 	private void initWebView(){
 		mWebView = new WebView(mActivity);
+        mWebView.resumeTimers();
 
 		DisplayMetrics metrics = new DisplayMetrics();
 		mActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -313,6 +357,25 @@ public class WebViewObject extends Object implements Runnable{
 		if(mVerbose)
 			Log.i("trace","WebView : Update webview transformation : ("+mX+", "+mY+", "+mWidth+", "+mHeight+")");
 	}
+
+	public void pause() {
+        Log.i("GameActivity", "onPauseeeeeeeeee asdadfasdfasdfasdf");
+        if(mWebView != null) {
+            Log.i("GameActivity", "onPauseeeeeeeeee asdadfasdfasdfasdf22");
+	        mWebView.pauseTimers();
+//	        mWebView.onPause();
+            callHiddenWebViewMethod("onPause");
+        }
+    }
+
+    public void resume() {
+	    if(mWebView != null) {
+            Log.i("traceeeeee", "resumeeeee");
+            mWebView.resumeTimers();
+//            mWebView.onResume();
+            callHiddenWebViewMethod("onResume");
+        }
+    }
 	
 	private void destroy() {
         if(mWebView != null)
@@ -324,6 +387,8 @@ public class WebViewObject extends Object implements Runnable{
             mWebView.destroy();
             mWebView = null;
             mLayout = null;
+
+            OpenFLWebView.delete(this);
 
             System.gc();
 
