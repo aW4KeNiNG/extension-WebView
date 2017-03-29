@@ -270,6 +270,7 @@ public class WebViewObject extends Object implements Runnable{
         webSettings.setJavaScriptEnabled(true);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         webSettings.setLoadsImagesAutomatically(true);
+        webSettings.setDomStorageEnabled(true);
         webSettings.setUseWideViewPort(true);
         webSettings.setAllowFileAccess(true);
         webSettings.setAllowUniversalAccessFromFileURLs(true);
