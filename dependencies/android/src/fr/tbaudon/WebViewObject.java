@@ -6,16 +6,16 @@ import android.graphics.Bitmap;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.webkit.*;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import fr.tbaudon.openflwebview.R;
 import org.haxe.lime.HaxeObject;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class WebViewObject extends Object implements Runnable{
 
@@ -98,13 +98,45 @@ public class WebViewObject extends Object implements Runnable{
 		runState(State.REMOVE);
 	}
 
-	public void onOrientationChange(){
+    public void onPaused() {
+        runState(State.PAUSE);
+    }
+
+    public void onResumed() {
+        runState(State.RESUME);
+    }
+
+    public void onOrientationChange(){
 		runState(State.UPDATE);
 	}
 
 	public void dispose(){
 		runState(State.DESTROY);
 	}
+
+    private void callHiddenWebViewMethod(String name)
+    {
+        if (mWebView != null)
+        {
+            try
+            {
+                Method method = WebView.class.getMethod(name);
+                method.invoke(mWebView);
+            }
+            catch (NoSuchMethodException e)
+            {
+                Log.e("No such method: " + name, e.toString());
+            }
+            catch (IllegalAccessException e)
+            {
+                Log.e("Illegal Access: " + name, e.toString());
+            }
+            catch (InvocationTargetException e)
+            {
+                Log.e("Invocation Target Exception: " + name, e.toString());
+            }
+        }
+    }
 
 	@Override
 	public void run() {
@@ -124,6 +156,12 @@ public class WebViewObject extends Object implements Runnable{
 			case DESTROY :
 				destroy();
 				break;
+            case PAUSE :
+                pause();
+                break;
+            case RESUME :
+                resume();
+                break;
 			default :
 				break;
 		}
@@ -136,6 +174,7 @@ public class WebViewObject extends Object implements Runnable{
 
 	private void initWebView(){
 		mWebView = new WebView(mActivity);
+        mWebView.resumeTimers();
 
 		DisplayMetrics metrics = new DisplayMetrics();
 		mActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -228,6 +267,15 @@ public class WebViewObject extends Object implements Runnable{
             public Bitmap getDefaultVideoPoster() {
                 return Bitmap.createBitmap(10, 10, Bitmap.Config.ARGB_8888);
             }
+
+            @Override
+            public boolean onConsoleMessage(ConsoleMessage cm) {
+                if(mVerbose)
+                    Log.i("trace", cm.message() + " -- From line "
+                        + cm.lineNumber() + " of "
+                        + cm.sourceId() );
+                return true;
+            }
 		});
 		
 		// webClient
@@ -264,6 +312,7 @@ public class WebViewObject extends Object implements Runnable{
         webSettings.setJavaScriptEnabled(true);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         webSettings.setLoadsImagesAutomatically(true);
+        webSettings.setDomStorageEnabled(true);
         webSettings.setUseWideViewPort(true);
         webSettings.setAllowFileAccess(true);
         webSettings.setAllowUniversalAccessFromFileURLs(true);
@@ -306,6 +355,20 @@ public class WebViewObject extends Object implements Runnable{
 		if(mVerbose)
 			Log.i("trace","WebView : Update webview transformation : ("+mX+", "+mY+", "+mWidth+", "+mHeight+")");
 	}
+
+	public void pause() {
+        if(mWebView != null) {
+	        mWebView.pauseTimers();
+            callHiddenWebViewMethod("onPause");
+        }
+    }
+
+    public void resume() {
+	    if(mWebView != null) {
+            mWebView.resumeTimers();
+            callHiddenWebViewMethod("onResume");
+        }
+    }
 	
 	private void destroy() {
         if(mWebView != null)
@@ -317,6 +380,8 @@ public class WebViewObject extends Object implements Runnable{
             mWebView.destroy();
             mWebView = null;
             mLayout = null;
+
+            OpenFLWebView.delete(this);
 
             System.gc();
 

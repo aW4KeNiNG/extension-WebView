@@ -43,6 +43,8 @@ class AbstractWebView extends Sprite {
         addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
         addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
         Lib.current.stage.addEventListener(Event.RESIZE, computeScale);
+        Lib.current.stage.addEventListener(Event.ACTIVATE, onResume);
+        Lib.current.stage.addEventListener(Event.DEACTIVATE, onPause);
 
         x = 0;
         y = 0;
@@ -99,6 +101,20 @@ class AbstractWebView extends Sprite {
             x = x;
             y = y;
         }
+    }
+
+    /**
+    *   Executed when the app go to background
+    **/
+    function onPause(e : Event){
+
+    }
+
+    /**
+    *   Executed when the app is active again
+    **/
+    function onResume(e : Event){
+
     }
 
     /**

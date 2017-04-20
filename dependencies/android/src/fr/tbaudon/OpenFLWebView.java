@@ -5,13 +5,22 @@ import android.util.Log;
 import org.haxe.extension.Extension;
 import org.haxe.lime.HaxeObject;
 
+import java.util.ArrayList;
+
 public class OpenFLWebView extends Extension{
 
     private static boolean mPreventBack = false;
+    private static ArrayList<WebViewObject> mWebViews = new ArrayList<WebViewObject>();
 
     public static WebViewObject create(HaxeObject object, int width, int height, boolean closeBtn){
-        return new WebViewObject(mainActivity, object, width, height, closeBtn);
+        WebViewObject webView = new WebViewObject(mainActivity, object, width, height, closeBtn);
+        mWebViews.add(webView);
+        return webView;
 	}
+
+	public static boolean delete(WebViewObject webView){
+        return mWebViews.remove(webView);
+    }
 	
 	public static int getRealHeight(){
 		int height = 100;
@@ -48,5 +57,19 @@ public class OpenFLWebView extends Extension{
     @Override
     public boolean onBackPressed () {
         return !mPreventBack;
+    }
+
+    @Override
+    public void onPause () {
+        for(int i = 0, count = mWebViews.size(); i<count; ++i) {
+            mWebViews.get(i).pause();
+        }
+    }
+
+    @Override
+    public void onResume () {
+        for(int i = 0, count = mWebViews.size(); i<count; ++i) {
+            mWebViews.get(i).resume();
+        }
     }
 }

@@ -1,7 +1,7 @@
 package fr.tbaudon ;
 
-import flash.display.Stage;
-import flash.events.Event;
+import openfl.display.Stage;
+import openfl.events.Event;
 import openfl.display.Sprite;
 import openfl.events.ErrorEvent;
 import openfl.events.FocusEvent;
@@ -35,6 +35,8 @@ class AndroidWebView extends AbstractWebView{
 	// MEMBER METHOD
 	private static var add_jni = JNI.createMemberMethod("fr.tbaudon.WebViewObject", "onAdded", "()V");
 	private static var remove_jni = JNI.createMemberMethod("fr.tbaudon.WebViewObject", "onRemoved", "()V");
+	private static var pause_jni = JNI.createMemberMethod("fr.tbaudon.WebViewObject", "onPaused", "()V");
+	private static var resume_jni = JNI.createMemberMethod("fr.tbaudon.WebViewObject", "onResumed", "()V");
 	private static var loadUrl_jni = JNI.createMemberMethod("fr.tbaudon.WebViewObject", "loadUrl", "(Ljava/lang/String;)V");
 	private static var setPos_jni = JNI.createMemberMethod("fr.tbaudon.WebViewObject", "setPosition", "(II)V");
 	private static var setDim_jni = JNI.createMemberMethod("fr.tbaudon.WebViewObject", "setDim", "(II)V");
@@ -120,6 +122,21 @@ class AndroidWebView extends AbstractWebView{
         return null;
 	}
 
+//    override function onPause(e : Event){
+//        if (mWebViewReady)
+//            pause_jni(mJNIInstance);
+//        else
+//            addToQueue(pause_jni, [mJNIInstance]);
+//    }
+//
+//
+//    override function onResume(e : Event){
+//        if (mWebViewReady)
+//            resume_jni(mJNIInstance);
+//        else
+//            addToQueue(resume_jni, [mJNIInstance]);
+//    }
+
     override function onRemovedFromStage(e:Event):Void
 	{
 		if (mWebViewReady)
@@ -161,7 +178,9 @@ class AndroidWebView extends AbstractWebView{
 			removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			removeEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
 			Lib.current.stage.removeEventListener(Event.RESIZE, computeScale);
-			
+			Lib.current.stage.removeEventListener(Event.ACTIVATE, onResume);
+			Lib.current.stage.removeEventListener(Event.DEACTIVATE, onPause);
+
 			System.gc();
 		}
 	}
