@@ -90,6 +90,15 @@ public class WebViewObject extends Object implements Runnable{
 		});
 	}
 
+    public void loadJavascript(String code) {
+        mWebView.loadUrl("javascript:android.onData((function(){" + code + "})())");
+    }
+
+    @JavascriptInterface
+    public void onData(String value) {
+        mObject.call2("onJNIEvent", "javascript", value);
+    }
+
 	public void onAdded() {
 		runState(State.ADD);
 	}
@@ -319,7 +328,8 @@ public class WebViewObject extends Object implements Runnable{
         if (android.os.Build.VERSION.SDK_INT > 16)
             webSettings.setMediaPlaybackRequiresUserGesture(false);
         mWebView.setBackgroundColor(0x00000000);
-		mObject.call0("onWebViewInited");
+        mWebView.addJavascriptInterface(this, "android");
+        mObject.call0("onWebViewInited");
 
         if(mVerbose)
 			Log.i("trace","WebView : Created new webview.");

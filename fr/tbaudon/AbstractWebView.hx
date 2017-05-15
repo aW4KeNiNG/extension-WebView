@@ -15,6 +15,8 @@ class AbstractWebView extends Sprite {
     **/
     public var onUrlChanging:String->String->Bool;
 
+    public var onJavascriptResult:String->Void;
+
     /** WebView true width **/
     var mWidth : Float;
     /** WebView true height **/
@@ -194,6 +196,14 @@ class AbstractWebView extends Sprite {
     **/
     public function loadUrl(url : String){
         throw 'loadUrl is not overridden.';
+    }
+
+    /**
+    *   Load the specified javascript code
+    *   @param code : String the code to load
+    **/
+    public function loadJavascript(code : String){
+        throw 'loadJavascript is not overridden.';
     }
 
     /**

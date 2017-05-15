@@ -38,6 +38,7 @@ class AndroidWebView extends AbstractWebView{
 	private static var pause_jni = JNI.createMemberMethod("fr.tbaudon.WebViewObject", "onPaused", "()V");
 	private static var resume_jni = JNI.createMemberMethod("fr.tbaudon.WebViewObject", "onResumed", "()V");
 	private static var loadUrl_jni = JNI.createMemberMethod("fr.tbaudon.WebViewObject", "loadUrl", "(Ljava/lang/String;)V");
+	private static var loadJavascript_jni = JNI.createMemberMethod("fr.tbaudon.WebViewObject", "loadJavascript", "(Ljava/lang/String;)V");
 	private static var setPos_jni = JNI.createMemberMethod("fr.tbaudon.WebViewObject", "setPosition", "(II)V");
 	private static var setDim_jni = JNI.createMemberMethod("fr.tbaudon.WebViewObject", "setDim", "(II)V");
 	private static var setVerbose_jni = JNI.createMemberMethod("fr.tbaudon.WebViewObject", "setVerbose", "(Z)V");
@@ -75,6 +76,13 @@ class AndroidWebView extends AbstractWebView{
 		else
 			addToQueue(loadUrl_jni, [mJNIInstance, url]);
 	}
+
+    override public function loadJavascript(code : String) {
+        if(mWebViewReady)
+            loadJavascript_jni(mJNIInstance, code);
+        else
+            addToQueue(loadJavascript_jni, [mJNIInstance, code]);
+    }
 
     override public function addCloseBtn(){
         trace("Nothing happens.,,");
@@ -115,6 +123,11 @@ class AndroidWebView extends AbstractWebView{
                 }
 
                 return allowUrl ? url : null;
+            case 'javascript':
+                if(onJavascriptResult != null)
+                {
+                    onJavascriptResult(param);
+                }
 			default :
 				trace(event);
 		}
