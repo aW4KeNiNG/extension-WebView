@@ -4,6 +4,16 @@
 #import <WebKit/WebKit.h>
 #include <Utils.h>
 
+/*
+ *  System Versioning Preprocessor Macros
+ */
+
+#define SYSTEM_VERSION_EQUAL_TO(v)                  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)
+#define SYSTEM_VERSION_GREATER_THAN(v)              ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedDescending)
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+#define SYSTEM_VERSION_LESS_THAN(v)                 ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
+#define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v)     ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)
+
 // used from external interface
 
 extern "C"{
@@ -37,8 +47,14 @@ static int mLastId = 0;
     NSURL* _url = [[NSURL alloc] initWithString: url];
     NSURLRequest *req = [[NSURLRequest alloc] initWithURL:_url];
     WKWebViewConfiguration *conf = [[WKWebViewConfiguration alloc] init];
+    [conf setAllowsInlineMediaPlayback: YES];
     conf.allowsInlineMediaPlayback = true;
-    conf.mediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypeNone;
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10.0")) {
+        conf.mediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypeNone;
+    } else {
+        conf.mediaPlaybackRequiresUserAction = false;
+    }
+
     self = [self initWithFrame: CGRectMake(0,0,width,height) configuration: conf];
     self.navigationDelegate = self;
     self.scrollView.bounces = NO;
