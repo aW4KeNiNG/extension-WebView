@@ -95,7 +95,7 @@ class AbstractWebView extends Sprite {
         mScaleX = displayWidth / Lib.current.stage.stageWidth;
         mScaleY = displayHeight / Lib.current.stage.stageHeight;
 		
-		trace(displayWidth, Capabilities.screenResolutionX, displayHeight, Capabilities.screenResolutionY);
+		trace(displayWidth, Capabilities.screenResolutionX, Lib.current.stage.stageWidth, displayHeight, Capabilities.screenResolutionY, Lib.current.stage.stageHeight);
 
         if (e != null)
         {

@@ -187,8 +187,12 @@ namespace openflwebview {
     void setPos(int id, int x, int y){
         OpenFLWebView* webView = getWebView(id);
 
+        CGFloat screenScale = [[UIScreen mainScreen] nativeScale];
+        if (screenScale < 2.46) {       //Workaround iPhone Plus
+            screenScale = 1;
+        }
         CGRect newFrame = webView.frame;
-		newFrame.origin = CGPointMake(x,y);
+		newFrame.origin = CGPointMake(x / screenScale, y / screenScale);
         
         [webView setFrame: newFrame];
     }
@@ -196,8 +200,12 @@ namespace openflwebview {
     void setDim(int id, int x, int y){
         OpenFLWebView* webView = getWebView(id);
 
+        CGFloat screenScale = [[UIScreen mainScreen] nativeScale];
+        if (screenScale < 2.46) {       //Workaround iPhone Plus
+            screenScale = 1;
+        }
         CGRect newFrame = webView.frame;
-        newFrame.size = CGSizeMake(x,y);
+        newFrame.size = CGSizeMake(x / screenScale, y / screenScale);
         
         [webView setFrame: newFrame];
         [webView updateCloseFrame];
