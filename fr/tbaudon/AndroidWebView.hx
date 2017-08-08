@@ -11,7 +11,7 @@ import openfl.Lib;
 import openfl.system.Capabilities;
 import openfl.system.System;
 
-import openfl.utils.JNI;
+import lime.system.JNI;
 
 class AndroidWebView extends AbstractWebView{
 	
