@@ -3,6 +3,7 @@ package fr.tbaudon;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -325,8 +326,12 @@ public class WebViewObject extends Object implements Runnable{
         webSettings.setUseWideViewPort(true);
         webSettings.setAllowFileAccess(true);
         webSettings.setAllowUniversalAccessFromFileURLs(true);
-        if (android.os.Build.VERSION.SDK_INT > 16)
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
             webSettings.setMediaPlaybackRequiresUserGesture(false);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
         mWebView.setBackgroundColor(0x00000000);
         mWebView.addJavascriptInterface(this, "android");
         mObject.call0("onWebViewInited");
