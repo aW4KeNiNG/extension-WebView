@@ -1,5 +1,7 @@
 #include <vector>
 
+#import <sys/utsname.h>
+
 #import <Foundation/Foundation.h>
 #import <WebKit/WebKit.h>
 #include <Utils.h>
@@ -129,6 +131,11 @@ namespace openflwebview {
     
     static std::vector<OpenFLWebView*> webViews;
     
+    //NSString* _getModel();
+    //BOOL _isiPhoneX(void);
+    //BOOL _isiPadPro(void);
+    CGFloat _getScreenScale();
+
     /**
      * Create a WebView
      * @param url default url to load
@@ -186,11 +193,7 @@ namespace openflwebview {
     
     void setPos(int id, int x, int y){
         OpenFLWebView* webView = getWebView(id);
-
-        CGFloat screenScale = [[UIScreen mainScreen] nativeScale];
-        //if (screenScale < 2.46) {       //Workaround iPhone Plus
-            screenScale = 1;
-        //}
+        CGFloat screenScale = _getScreenScale();
         CGRect newFrame = webView.frame;
 		newFrame.origin = CGPointMake(x / screenScale, y / screenScale);
         
@@ -199,11 +202,7 @@ namespace openflwebview {
     
     void setDim(int id, int x, int y){
         OpenFLWebView* webView = getWebView(id);
-        CGFloat screenScale = [[UIScreen mainScreen] nativeScale];
-        //if (screenScale < 2.46) {       //Workaround iPhone Plus
-            screenScale = 1;
-        //}
-
+        CGFloat screenScale = _getScreenScale();
         CGRect newFrame = webView.frame;
         newFrame.size = CGSizeMake(x / screenScale, y / screenScale);
         
@@ -236,6 +235,51 @@ namespace openflwebview {
     void addCloseBtn(int id){
         OpenFLWebView* webview = getWebView(id);
         [webview addCloseBtn];
+    }
+
+    /*NSString* _getModel()
+    {
+        static NSString *model;
+        static dispatch_once_t onceToken;
+
+        dispatch_once(&onceToken, ^{
+    #if TARGET_IPHONE_SIMULATOR
+            model = NSProcessInfo.processInfo.environment[@"SIMULATOR_MODEL_IDENTIFIER"];
+    #else
+
+            struct utsname systemInfo;
+            uname(&systemInfo);
+
+            model = [NSString stringWithCString:systemInfo.machine
+                                                encoding:NSUTF8StringEncoding];
+    #endif
+            NSLog(@"MODEL: %@", model);
+        });
+
+        return model;
+    }
+
+    BOOL _isiPhoneX(void)
+    {
+        NSString *model = _getModel();
+        return [model isEqualToString:@"iPhone10,3"] || [model isEqualToString:@"iPhone10,6"];
+    }
+
+    BOOL _isiPadPro(void)
+    {
+        NSString *model = _getModel();
+        return [model isEqualToString:@"iPad6,7"] || //iPad Pro 12.9''
+            [model isEqualToString:@"iPad6,8"] ||    //iPad Pro 12.9''
+            [model isEqualToString:@"iPad7,1"] ||    //iPad Pro 12.9'' 2th gen
+            [model isEqualToString:@"iPad7,2"];      //iPad Pro 12.9'' 2th gen  
+    }*/
+
+    CGFloat _getScreenScale()
+    {
+        CGFloat screenScale = [[UIScreen mainScreen] nativeScale];
+        NSLog(@"WebView: Screen Scale: %.2f", screenScale);
+
+        return screenScale;
     }
     
 }
