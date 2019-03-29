@@ -97,7 +97,8 @@ public class WebViewObject extends Object implements Runnable{
 
     @JavascriptInterface
     public void onData(String value) {
-        mObject.call2("onJNIEvent", "javascript", value);
+        if(mObject != null)
+            mObject.call2("onJNIEvent", "javascript", value);
     }
 
 	public void onAdded() {
@@ -202,7 +203,8 @@ public class WebViewObject extends Object implements Runnable{
             mClose.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View arg0) {
-                    mObject.call2("onJNIEvent", "close", null);
+                    if(mObject != null)
+                        mObject.call2("onJNIEvent", "close", null);
                 }
             });
 
@@ -270,7 +272,8 @@ public class WebViewObject extends Object implements Runnable{
 
             @Override
             public void onProgressChanged(WebView view, int progress) {
-                mObject.call2("onJNIEvent", "progress", progress);
+                if(mObject != null)
+                    mObject.call2("onJNIEvent", "progress", progress);
             }
 
             @Override
@@ -293,7 +296,8 @@ public class WebViewObject extends Object implements Runnable{
              @Override
              public void onReceivedError(WebView view, int errorCode, String description, String failingUrl)
              {
-            	 mObject.call2("onJNIEvent", "error", description);
+                 if(mObject != null)
+            	    mObject.call2("onJNIEvent", "error", description);
              }
 
              @Override
@@ -301,13 +305,14 @@ public class WebViewObject extends Object implements Runnable{
              {
                  super.onPageFinished(view, url);
 
-                 mObject.call2("onJNIEvent", "complete", url);
+                 if(mObject != null)
+                     mObject.call2("onJNIEvent", "complete", url);
              }
 
              @Override
              public boolean shouldOverrideUrlLoading(WebView view, String url)
              {
-                 boolean allowUrl = mObject.call2("onJNIEvent", "change" , url) != null;
+                 boolean allowUrl = mObject != null ? mObject.call2("onJNIEvent", "change" , url) != null : false;
 
                  if(allowUrl)
                  {
