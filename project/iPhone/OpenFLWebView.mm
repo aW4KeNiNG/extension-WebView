@@ -22,7 +22,7 @@ extern "C"{
     void openflwebview_sendEvent(const char* event, const char* params);
 }
 
-@interface OpenFLWebView : WKWebView <WKNavigationDelegate>
+@interface OpenFLWebView : WKWebView <WKNavigationDelegate, WKUIDelegate>
 
 @property (assign) int mId;
 @property (strong) UIImageView* mCloseView;
@@ -59,6 +59,7 @@ static int mLastId = 0;
 
     self = [self initWithFrame: CGRectMake(0,0,width,height) configuration: conf];
     self.navigationDelegate = self;
+    self.UIDelegate = self;
     self.scrollView.bounces = NO;
     [self loadRequest:req];
     return self;
@@ -123,6 +124,19 @@ static int mLastId = 0;
     }
 
     decisionHandler(WKNavigationActionPolicyAllow);
+}
+
+- (WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures {
+    if (navigationAction.request.URL) {
+        if(navigationAction.targetFrame.isMainFrame) {
+           openflwebview_sendEvent("change", [[navigationAction.request.URL absoluteString] cStringUsingEncoding:NSUTF8StringEncoding]);
+        }
+        else {
+           openflwebview_sendEvent("change_blank", [[navigationAction.request.URL absoluteString] cStringUsingEncoding:NSUTF8StringEncoding]);
+        }
+    }
+
+    return nil;
 }
 
 @end

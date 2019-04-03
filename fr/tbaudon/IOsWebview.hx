@@ -34,7 +34,7 @@ class IOsWebView extends AbstractWebView {
     }
 
     function onIosEvent(name : String, params : String){
-        trace(name, params);
+        trace("event", name, params);
         switch(name){
             case "close" :
                 dispatchEvent(new Event(Event.CLOSE));
