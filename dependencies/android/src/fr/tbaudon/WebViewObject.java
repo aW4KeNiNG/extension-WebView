@@ -321,6 +321,15 @@ public class WebViewObject extends Object implements Runnable{
 
                  return !allowUrl;
              }
+
+             //Track changes with hash
+             @Override
+             public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
+                 super.doUpdateVisitedHistory(view, url, isReload);
+
+                  if(mObject != null)
+                      mObject.call2("onJNIEvent", "change" , url);
+             }
          });
 
         WebSettings webSettings = mWebView.getSettings();
