@@ -26,6 +26,8 @@ public class WebViewObject extends Object implements Runnable{
 	private int mX;
 	private int mY;
 
+    private String mUserAgent;
+
 	private boolean mVerbose;
 	private boolean mAddClose;
 	private boolean mWebViewAdded;
@@ -43,12 +45,13 @@ public class WebViewObject extends Object implements Runnable{
     private int mCloseOffsetX;
     private int mCloseOffsetY;
 
-	public WebViewObject(Activity mainActivity, HaxeObject object, int width, int height, boolean closeBtn){
+	public WebViewObject(Activity mainActivity, HaxeObject object, int width, int height, boolean closeBtn, String userAgent){
 		super();
 
         setDim(width, height);
 		setPosition(0, 0);
 		setVerbose(false);
+        mUserAgent = userAgent;
 
 		mWebViewAdded = false;
 
@@ -92,11 +95,11 @@ public class WebViewObject extends Object implements Runnable{
 	}
 
     public void loadJavascript(String code) {
-        mWebView.loadUrl("javascript:android.onData((function(){" + code + "})())");
+        mWebView.loadUrl("javascript:android.sendJSON((function(){" + code + "})())");
     }
 
     @JavascriptInterface
-    public void onData(String value) {
+    public void sendJSON(String value) {
         if(mObject != null)
             mObject.call2("onJNIEvent", "javascript", value);
     }
@@ -340,6 +343,8 @@ public class WebViewObject extends Object implements Runnable{
         webSettings.setUseWideViewPort(true);
         webSettings.setAllowFileAccess(true);
         webSettings.setAllowUniversalAccessFromFileURLs(true);
+        if(mUserAgent != null)
+            webSettings.setUserAgentString(webSettings.getUserAgentString() + " " + mUserAgent);
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
             webSettings.setMediaPlaybackRequiresUserGesture(false);
         }

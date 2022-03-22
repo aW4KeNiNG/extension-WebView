@@ -37,7 +37,7 @@ class AbstractWebView extends Sprite {
     *   @param h : Float height of the window
 	* 	@param close : Bool add a close button if true
     **/
-    function new(defaultUrl : String, w : Float = 400, h : Float = 400, close : Bool = false ) {
+    function new(defaultUrl : String, w : Float = 400, h : Float = 400, close : Bool = false, userAgent : String = null) {
         super();
 
         computeScale();

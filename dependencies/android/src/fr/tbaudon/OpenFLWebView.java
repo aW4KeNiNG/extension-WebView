@@ -12,8 +12,8 @@ public class OpenFLWebView extends Extension{
     private static boolean mPreventBack = false;
     private static ArrayList<WebViewObject> mWebViews = new ArrayList<WebViewObject>();
 
-    public static WebViewObject create(HaxeObject object, int width, int height, boolean closeBtn){
-        WebViewObject webView = new WebViewObject(mainActivity, object, width, height, closeBtn);
+    public static WebViewObject create(HaxeObject object, int width, int height, boolean closeBtn, String userAgent){
+        WebViewObject webView = new WebViewObject(mainActivity, object, width, height, closeBtn, userAgent);
         mWebViews.add(webView);
         return webView;
 	}

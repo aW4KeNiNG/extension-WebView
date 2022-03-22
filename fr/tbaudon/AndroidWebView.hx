@@ -27,7 +27,7 @@ class AndroidWebView extends AbstractWebView{
 	 * Sample : (Ljava/lang/String;I)Z = function(String, Int) : bool
 	 */
 	// STATIC METHOD
-	private static var create_jni = JNI.createStaticMethod("fr.tbaudon.OpenFLWebView", "create", "(Lorg/haxe/lime/HaxeObject;IIZ)Lfr/tbaudon/WebViewObject;");
+	private static var create_jni = JNI.createStaticMethod("fr.tbaudon.OpenFLWebView", "create", "(Lorg/haxe/lime/HaxeObject;IIZLjava/lang/String;)Lfr/tbaudon/WebViewObject;");
 	private static var getRealHeight_jni = JNI.createStaticMethod("fr.tbaudon.OpenFLWebView", "getRealHeight", "()I");
 	private static var getRealWidth_jni = JNI.createStaticMethod("fr.tbaudon.OpenFLWebView", "getRealWidth", "()I");
 	private static var setPreventBack_jni = JNI.createStaticMethod("fr.tbaudon.OpenFLWebView", "setPreventBack", "(Z)V");
@@ -53,8 +53,8 @@ class AndroidWebView extends AbstractWebView{
 	var mQueue : Array<{func : Dynamic, params : Array<Dynamic>}>;
 	var mWebViewReady : Bool;
 	
-	public function new(defaultUrl : String = "http://www.baudon.me", w : Float = 400, h : Float = 400, close : Bool = false) {
-        mJNIInstance = create_jni(this, mWidth, mHeight, close);
+	public function new(defaultUrl : String = "http://www.baudon.me", w : Float = 400, h : Float = 400, close : Bool = false, userAgent : String = null) {
+        mJNIInstance = create_jni(this, mWidth, mHeight, close, userAgent);
         mQueue = new Array<{func : Dynamic, params : Array<Dynamic>}>();
         mWebViewReady = false;
 
@@ -235,8 +235,8 @@ class AndroidWebView extends AbstractWebView{
                 displayWidth = displayHeight * ratio;
             }
 
-            mOffsetX = (screenWidth - displayWidth) / 2;
-            mOffsetY = (screenHeight - displayHeight) / 2;
+//            mOffsetX = (screenWidth - displayWidth) / 2;
+//            mOffsetY = (screenHeight - displayHeight) / 2;
         }else {
             displayHeight = screenHeight;
             displayWidth = displayHeight * ratio;
@@ -245,14 +245,12 @@ class AndroidWebView extends AbstractWebView{
                 displayHeight = screenWidth / ratio;
             }
 
-            mOffsetX = (screenWidth - displayWidth) / 2;
-            mOffsetY = (screenHeight - displayHeight) / 2;
+//            mOffsetX = (screenWidth - displayWidth) / 2;
+//            mOffsetY = (screenHeight - displayHeight) / 2;
         }
 
         mScaleX = displayWidth / Lib.current.stage.stageWidth;
         mScaleY = displayHeight / Lib.current.stage.stageHeight;
-		
-		trace(displayWidth, screenWidth, displayHeight, screenHeight);
 
         if (e != null)
         {

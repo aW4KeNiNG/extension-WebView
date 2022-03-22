@@ -20,7 +20,7 @@ class FlashWebView extends Sprite
 	var mH : Float;
 	var mClose:Bitmap;
 
-	public function new(defaultUrl : String, w : Float = 400, h : Float = 400, close : Bool = false) 
+	public function new(defaultUrl : String, w : Float = 400, h : Float = 400, close : Bool = false, userAgent : String = null)
 	{
 		super();
 		url = defaultUrl;
