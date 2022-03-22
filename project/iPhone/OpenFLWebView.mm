@@ -22,12 +22,12 @@ extern "C"{
     void openflwebview_sendEvent(const char* event, const char* params);
 }
 
-@interface OpenFLWebView : WKWebView <WKNavigationDelegate, WKUIDelegate>
+@interface OpenFLWebView : WKWebView <WKNavigationDelegate, WKUIDelegate/*, WKScriptMessageHandler*/>
 
 @property (assign) int mId;
 @property (strong) UIImageView* mCloseView;
 
-- (id) initWithUrlAndFrame: (NSString*)url width: (int)width height: (int)height;
+- (id) initWithUrlAndFrame: (NSString*)url width: (int)width height: (int)height userAgent: (NSString*)userAgent;
 - (int) getId;
 - (void) addCloseBtn;
 - (void) updateCloseFrame;
@@ -43,7 +43,7 @@ extern "C"{
 
 static int mLastId = 0;
 
-- (id)initWithUrlAndFrame:(NSString *)url width:(int)width height:(int)height{
+- (id)initWithUrlAndFrame:(NSString *)url width:(int)width height:(int)height userAgent:(NSString*)userAgent{
     mId = mLastId;
     ++mLastId;
     NSURL* _url = [[NSURL alloc] initWithString: url];
@@ -57,11 +57,31 @@ static int mLastId = 0;
         conf.mediaPlaybackRequiresUserAction = false;
     }
 
+    /*WKUserContentController *ucc = [[WKUserContentController alloc] init];
+    [ucc addScriptMessageHandler:self name:@"logging"];
+    [conf setUserContentController:ucc];*/
+
     self = [self initWithFrame: CGRectMake(0,0,width,height) configuration: conf];
     self.navigationDelegate = self;
     self.UIDelegate = self;
     self.scrollView.bounces = NO;
+    
+    /*NSString * js = @"var console = { log: function(msg){window.webkit.messageHandlers.logging.postMessage(msg) } };";
+    [self evaluateJavaScript:js completionHandler:^(id _Nullable ignored, NSError * _Nullable error) {
+        if (error != nil)
+            NSLog(@"installation of console.log() failed: %@", error);
+    }];*/
+
+    if(userAgent != nil)
+    {
+        [self evaluateJavaScript:@"navigator.userAgent" completionHandler:^(id result, NSError *error) {
+            NSString *newUserAgent = [result stringByAppendingString:userAgent];
+            self.customUserAgent = newUserAgent;
+        }];
+    }
+    
     [self loadRequest:req];
+    
     return self;
 }
 
@@ -139,6 +159,11 @@ static int mLastId = 0;
     return nil;
 }
 
+/*- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message
+{
+    NSLog(@"log: %@", message.body);
+}*/
+
 @end
 
 namespace openflwebview {
@@ -156,9 +181,10 @@ namespace openflwebview {
      * @param width webview width
      * @param height webview height
      */
-    int create(const char* url, int width, int height){
+    int create(const char* url, int width, int height, const char* userAgent){
         NSString* defaultUrl = [[NSString alloc] initWithUTF8String:url];
-        OpenFLWebView* webView = [[OpenFLWebView alloc] initWithUrlAndFrame:defaultUrl width:width height:height];
+        NSString* defaultUserAgent = (userAgent != NULL) ? [[NSString alloc] initWithUTF8String:userAgent] : nil;
+        OpenFLWebView* webView = [[OpenFLWebView alloc] initWithUrlAndFrame:defaultUrl width:width height:height userAgent:defaultUserAgent];
         webViews.push_back(webView);
         return [webView getId];
     }

@@ -19,11 +19,11 @@ extern "C" {
         val_call2(eval_onEvent->get(), alloc_string(event), alloc_string(params));
     }
     
-    static value openflwebview_create(value defaultUrl, value width, value height){
-        int rep = create(val_string(defaultUrl), val_int(width), val_int(height));
+    static value openflwebview_create(value defaultUrl, value width, value height, value userAgent){
+        int rep = create(val_string(defaultUrl), val_int(width), val_int(height), val_string(userAgent));
         return alloc_int(rep);
     }
-    DEFINE_PRIM(openflwebview_create, 3);
+    DEFINE_PRIM(openflwebview_create, 4);
     
     static void openflwebview_onAdded(value webviewId){
         int id = val_int(webviewId);

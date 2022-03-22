@@ -4,7 +4,7 @@
 
 namespace openflwebview {
 	
-	int create(const char* url, int width, int height);
+	int create(const char* url, int width, int height, const char* userAgent);
     void onAdded(int id);
     void onRemoved(int id);
     void setPos(int id, int x, int y);
