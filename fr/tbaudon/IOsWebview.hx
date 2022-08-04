@@ -11,7 +11,7 @@ class IOsWebView extends AbstractWebView {
     / CPP LINKING
     */
 
-    static var openflwebview_create = cpp.Lib.load("openflwebview", 'openflwebview_create', 3);
+    static var openflwebview_create = cpp.Lib.load("openflwebview", 'openflwebview_create', 4);
     static var openflwebview_onAdded = cpp.Lib.load("openflwebview", "openflwebview_onAdded", 1);
     static var openflwebview_onRemoved = cpp.Lib.load("openflwebview", "openflwebview_onRemoved", 1);
     static var openflwebview_setPos = cpp.Lib.load("openflwebview", "openflwebview_setPos", 3);
@@ -26,8 +26,10 @@ class IOsWebView extends AbstractWebView {
     **/
     var mId : Int;
 
-    public function new(defaultUrl : String = "http://www.baudon.me", w : Float = 400, h : Float = 400, close : Bool = false) {
-        mId = openflwebview_create(defaultUrl, w, h);
+    public function new(defaultUrl : String = "http://www.baudon.me", w : Float = 400, h : Float = 400, close : Bool = false, userAgent : String = null) {
+        if(userAgent != null)
+            userAgent = " " + userAgent;
+        mId = openflwebview_create(defaultUrl, w, h, userAgent);
         super(defaultUrl, w, h);
         if(close) addCloseBtn();
         openflwebview_setCallback(onIosEvent);
