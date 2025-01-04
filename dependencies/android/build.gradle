@@ -1,0 +1,22 @@
+apply plugin: 'com.android.library'
+
+android {
+    namespace 'fr.tbaudon.openflwebview'
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            res.srcDirs = ['res']
+        }
+    }
+    defaultConfig {
+        minSdkVersion Integer.parseInt(project.ANDROID_BUILD_MIN_SDK_VERSION)
+        compileSdkVersion Integer.parseInt(project.ANDROID_BUILD_TARGET_SDK_VERSION)
+        buildToolsVersion project.ANDROID_BUILD_TOOLS_VERSION
+    }
+}
+
+dependencies {
+    implementation project(':deps:extension-api')
+    implementation 'com.android.support:support-v4:+'
+}
